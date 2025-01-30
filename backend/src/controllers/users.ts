@@ -8,6 +8,8 @@ import BadRequestError from "../errors/bad-request-error";
 import ConflictError from "../errors/conflict-error";
 import bcrypt from 'bcryptjs';
 import { myDataSource } from "../app-data-source";
+import jwt from 'jsonwebtoken';
+import { JWT_SECRET } from '../config';
 
 export const createUser = (req: Request, res: Response, next: NextFunction) => {
   const {
@@ -33,7 +35,6 @@ export const createUser = (req: Request, res: Response, next: NextFunction) => {
 
 export const login = (req: Request, res: Response) => {
   const { username, password } = req.body;
-
   return myDataSource.getRepository(User).findOne({
     where: {
       username: username,
@@ -43,13 +44,15 @@ export const login = (req: Request, res: Response) => {
       if (!user) {
         return Promise.reject(new Error('Неправильная почта или пароль'));
       }
-      return bcrypt.compare(password, user.password);
-    })
-    .then((matched) => {
-      if (!matched) {
-        return Promise.reject(new Error('Неправильная почта или пароль'));
-      }
-      res.send({ message: 'Всё верно!' });
+
+      return bcrypt.compare(password, user.password)
+        .then((matched) => {
+          if (!matched) {
+            return Promise.reject(new Error('Неправильная почта или пароль'));
+          }
+          const token = jwt.sign({ id: user.id }, JWT_SECRET)
+          res.send({ token })
+        })
     })
     .catch((err) => {
       res
