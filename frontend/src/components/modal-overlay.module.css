@@ -1,0 +1,13 @@
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    opacity: 0.2;
+    transition:
+        visibility 0s,
+        opacity 0.5s linear;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+    background-color: #1c1c21;
+}
