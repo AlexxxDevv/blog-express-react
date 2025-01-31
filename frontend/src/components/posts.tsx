@@ -21,14 +21,13 @@ export type Post = {
 
 export type PostProps = {
   post: Post[] | undefined;
-  handleOpenModal: (e) => void;
-  sendData: (val) => void;
+  sendData: (val: number) => void;
+  user: User | undefined;
 }
 
-const Posts: FC<PostProps> = ({ post, handleOpenModal, sendData }) => {
+const Posts: FC<PostProps> = ({ post, sendData, user }) => {
   const token = localStorage.getItem('accessToken');
   const [posts, setPosts] = useState<Post[]>();
-  const [postNumber, setPostNumber] = useState<number>();
   const fetchData = () => {
     request(`${baseUrl + '/post'}`)
       .then(data => {
@@ -55,7 +54,7 @@ const Posts: FC<PostProps> = ({ post, handleOpenModal, sendData }) => {
       {posts && (
         <ul className={styles.postList}>
           {posts.map(post => (
-            <li className={styles.postitem} key={post.id}><PostItem handlePatch={() => { sendData(post.id)}} onClose={() => handleDeletePostItem(post.id)} date={post.createdAt} data={post.text} author={post.owner.username} /></li>
+            <li className={styles.postitem} key={post.id}><PostItem  user={user} handlePatch={() => { sendData(post.id)}} onClose={() => handleDeletePostItem(post.id)} date={post.createdAt} data={post.text} author={post.owner.username} owner ={post.owner.id} /></li>
           ))}
         </ul>
       )}

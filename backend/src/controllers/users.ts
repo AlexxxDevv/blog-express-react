@@ -3,17 +3,23 @@ import {
   Response,
   NextFunction,
 } from 'express';
-import { User } from "../entity/user.entity";
-import BadRequestError from "../errors/bad-request-error";
-import ConflictError from "../errors/conflict-error";
 import bcrypt from 'bcryptjs';
-import { myDataSource } from "../app-data-source";
 import jwt from 'jsonwebtoken';
+import { User } from '../entity/user.entity';
+import BadRequestError from '../errors/bad-request-error';
+import ConflictError from '../errors/conflict-error';
+import { myDataSource } from '../app-data-source';
 import { JWT_SECRET } from '../config';
 
+interface JwtPayload {
+  id: number
+}
+interface SessionRequest extends Request {
+  user?: JwtPayload;
+}
 export const createUser = (req: Request, res: Response, next: NextFunction) => {
   const {
-    username, password
+    username, password,
   } = req.body;
 
   bcrypt.hash(password, 10)
@@ -37,7 +43,7 @@ export const login = (req: Request, res: Response) => {
   const { username, password } = req.body;
   return myDataSource.getRepository(User).findOne({
     where: {
-      username: username,
+      username,
     },
   })
     .then((user) => {
@@ -50,13 +56,24 @@ export const login = (req: Request, res: Response) => {
           if (!matched) {
             return Promise.reject(new Error('Неправильная почта или пароль'));
           }
-          const token = jwt.sign({ id: user.id }, JWT_SECRET)
-          res.send({ token })
-        })
+          const token = jwt.sign({ id: user.id }, JWT_SECRET);
+          res.send({ token, user });
+        });
     })
     .catch((err) => {
       res
         .status(401)
         .send({ message: err.message });
     });
+};
+
+export const getUserData = async (req: SessionRequest, res: Response) => {
+  console.log(req.user?.id);
+  const id = Number(req.user?.id);
+  const user = await myDataSource.getRepository(User).findOne({
+    where: {
+      id,
+    },
+  });
+  res.status(200).send(user);
 };

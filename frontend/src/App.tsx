@@ -1,6 +1,4 @@
 import { SetStateAction, useEffect, useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 import Header from './components/header'
 import Posts from './components/posts'
@@ -8,6 +6,7 @@ import styles from './components/buttonModal.module.css'
 import Modal from './components/modal.tsx';
 import { baseUrl, request } from './utils/api.ts'
 import ModalPostNew from './components/modal-new-post.tsx'
+import ModalPostPatch from './components/modal-patch-post.tsx'
 
 export type User = {
   id: number;
@@ -27,11 +26,24 @@ export type Post = {
 
 function App() {
   const [posts, setPosts] = useState<Post[]>()
-  const [count, setCount] = useState(0);
   const [visible, setVisible] = useState(false);
   const [opened, setOpened] = useState(false);
   const [postNumber, setPostNumber] = useState<number>();
-
+  const [user, setUser] = useState<User>();
+  const token = localStorage.getItem('accessToken');
+  const fetchUser = async () => {
+    try {
+      const res = await request(`${baseUrl + '/profile'}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json;charset=utf-8',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      setUser(res);
+    }
+    catch (err) { console.log(err) }
+  }
   const fetchData = () => {
     request(`${baseUrl + '/post'}`)
       .then(data => {
@@ -39,60 +51,53 @@ function App() {
       });
   }
   useEffect(() => {
+    if (token) {
+      fetchUser();
+    }
     fetchData()
-  }, [visible])
+  }, [visible, opened, token])
   const handleOpenModal = () => {
     setVisible(true);
   };
 
   const handleCloseModal = () => {
     setVisible(false);
+    setOpened(false);
   };
 
-  function handleOpenModalForPatch(val: SetStateAction<number | undefined>){
+  function handleOpenModalForPatch(val: SetStateAction<number | undefined>) {
     setOpened(true);
     setPostNumber(val);
-}
-console.log(postNumber, opened);
+  }
+
+  const handleUser = (user: SetStateAction<User | undefined>) => {
+    setUser(user);
+  }
+
+  const handleExit = () => {
+    localStorage.removeItem('accessToken');
+    setUser(undefined);
+  }
 
   return (
     <>
-      <Header />
+      <Header getUser={(user: User) => handleUser(user)} />
       <div className={styles.container}>
-        <button value={'createBtn'} className={styles.button} onClick={handleOpenModal}>Сделать пост</button>
-        <button className={styles.accountExitButton}>Выйти из аккаунта</button>
+        <button disabled={!user} className={styles.button} onClick={handleOpenModal}>Сделать пост</button>
+        <button disabled={!user} className={styles.accountExitButton} onClick={handleExit}>Выйти из аккаунта</button>
+        {user && (<p>Вы авторизованы как <span>{user?.username}</span></p>)}
       </div>
-      <Posts sendData={(val) => handleOpenModalForPatch(val)} post={posts} handleOpenModal={() => handleOpenModal()}/>
+      <Posts sendData={(val) => handleOpenModalForPatch(val)} post={posts} user={user} />
       {visible && (
         <Modal onClose={handleCloseModal}>
-         < ModalPostNew onClose={handleCloseModal} />
+          < ModalPostNew onClose={handleCloseModal} />
         </Modal>
       )}
       {opened && postNumber && (
         <Modal onClose={handleCloseModal}>
-         <span>{postNumber}</span>
+          <  ModalPostPatch onClose={handleCloseModal} postId={postNumber} posts={posts} />
         </Modal>
       )}
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
   )
 }

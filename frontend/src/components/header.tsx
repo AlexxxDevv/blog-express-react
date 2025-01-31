@@ -1,12 +1,18 @@
-import { useState } from "react";
+import { FC, useState } from "react";
 import { baseUrl, request } from "../utils/api";
 import styles from './header.module.css';
+import { User } from "../App";
 
 type AuthRespons = {
   token: string;
+  user: User;
 }
 
-export default function Header() {
+type HeaderProps = {
+  getUser: (user: User) => void;
+}
+
+const Header: FC<HeaderProps> = ({getUser}) => {
   const [regData, setRegData] = useState({
     username: '',
     password: '',
@@ -58,6 +64,7 @@ export default function Header() {
       },
       body: JSON.stringify(data)
     });
+    getUser(response.user)
     localStorage.setItem("accessToken", response.token)
   }
   return (
@@ -87,3 +94,5 @@ export default function Header() {
     </div>
   )
 }
+
+export default Header;

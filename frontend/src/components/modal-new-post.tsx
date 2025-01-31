@@ -9,21 +9,6 @@ type ModalProps = {
 const ModalPostNew = (props: ModalProps) => {
   const [text, setText] = useState('Напиши что-нибудь скорее');
   const token = localStorage.getItem('accessToken');
-  /* const [type, setType] = useState();
-  console.log(typeof type)
-  React.useEffect(() => {
-    setType(props.calledBtn)
-    const escFunction = (e: { key: string; }): void => {
-      if (e.key === "Escape") {
-        props.onClose()
-      }
-    }
-    document.addEventListener("keydown", escFunction);
-    return () => {
-      document.removeEventListener("keydown", escFunction);
-    };
-  }, [])
- */
   const handleSubmitPost = async (text: string) => {
     await request(`${baseUrl + '/post'}`, {
       method: 'POST',
