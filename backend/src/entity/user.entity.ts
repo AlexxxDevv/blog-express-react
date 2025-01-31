@@ -1,11 +1,16 @@
-import { IsString, MinLength, MaxLength, IsNotEmpty } from "class-validator";
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from "typeorm";
-import { Post } from "./post.entity";
+/* eslint-disable import/prefer-default-export */
+import {
+  IsString, MinLength, MaxLength, IsNotEmpty,
+} from 'class-validator';
+import {
+  Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany,
+} from 'typeorm';
+import { Post } from './post.entity';
 
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
-  id!: number;
+    id!: number;
 
   @IsString()
   @MinLength(2)
@@ -14,20 +19,21 @@ export class User {
   @Column({
     unique: true,
   })
-  username!: string;
+    username!: string;
 
   @IsString()
   @MinLength(1)
   @Column()
-  password!: string;
+    password!: string;
 
   @CreateDateColumn()
-  createdAt!: Date;
+    createdAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt!: Date;
+    updatedAt!: Date;
 
   @OneToMany(() => Post, (post) => post.owner)
-  posts!: Post[];
+    posts!: Post[];
 }
+
 
