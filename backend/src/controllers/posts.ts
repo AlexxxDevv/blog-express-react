@@ -81,3 +81,18 @@ export const getPosts = async (req: Request, res: Response) => {
     console.log(err);
   }
 };
+
+export const getPostById = async (req: Request, res: Response) => {
+  try {
+    const id = Number(req.params.id);
+    const post = await myDataSource.getRepository(Post).findOneOrFail({
+      where: {
+        id,
+      },
+      relations: ['owner'],
+    });
+    res.send(post);
+  } catch (err) {
+    console.log(err);
+  }
+};

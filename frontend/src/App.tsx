@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { SetStateAction, useEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
@@ -7,6 +7,7 @@ import Posts from './components/posts'
 import styles from './components/buttonModal.module.css'
 import Modal from './components/modal.tsx';
 import { baseUrl, request } from './utils/api.ts'
+import ModalPostNew from './components/modal-new-post.tsx'
 
 export type User = {
   id: number;
@@ -26,6 +27,11 @@ export type Post = {
 
 function App() {
   const [posts, setPosts] = useState<Post[]>()
+  const [count, setCount] = useState(0);
+  const [visible, setVisible] = useState(false);
+  const [opened, setOpened] = useState(false);
+  const [postNumber, setPostNumber] = useState<number>();
+
   const fetchData = () => {
     request(`${baseUrl + '/post'}`)
       .then(data => {
@@ -34,29 +40,37 @@ function App() {
   }
   useEffect(() => {
     fetchData()
-  }, [])
-  const [count, setCount] = useState(0);
-  const [visible, setVisible] = useState(false);
+  }, [visible])
   const handleOpenModal = () => {
     setVisible(true);
   };
 
   const handleCloseModal = () => {
     setVisible(false);
-    fetchData()
   };
+
+  function handleOpenModalForPatch(val: SetStateAction<number | undefined>){
+    setOpened(true);
+    setPostNumber(val);
+}
+console.log(postNumber, opened);
 
   return (
     <>
       <Header />
       <div className={styles.container}>
-        <button className={styles.button} onClick={handleOpenModal}>Сделать пост</button>
+        <button value={'createBtn'} className={styles.button} onClick={handleOpenModal}>Сделать пост</button>
         <button className={styles.accountExitButton}>Выйти из аккаунта</button>
       </div>
-      <Posts post={posts}/>
+      <Posts sendData={(val) => handleOpenModalForPatch(val)} post={posts} handleOpenModal={() => handleOpenModal()}/>
       {visible && (
         <Modal onClose={handleCloseModal}>
-          <span>привет</span>
+         < ModalPostNew onClose={handleCloseModal} />
+        </Modal>
+      )}
+      {opened && postNumber && (
+        <Modal onClose={handleCloseModal}>
+         <span>{postNumber}</span>
         </Modal>
       )}
       <div>

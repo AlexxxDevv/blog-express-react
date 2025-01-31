@@ -21,12 +21,14 @@ export type Post = {
 
 export type PostProps = {
   post: Post[] | undefined;
+  handleOpenModal: (e) => void;
+  sendData: (val) => void;
 }
 
-const Posts: FC<PostProps> = ({ post }) => {
-  console.log(post)
+const Posts: FC<PostProps> = ({ post, handleOpenModal, sendData }) => {
   const token = localStorage.getItem('accessToken');
-  const [posts, setPosts] = useState<Post[]>()
+  const [posts, setPosts] = useState<Post[]>();
+  const [postNumber, setPostNumber] = useState<number>();
   const fetchData = () => {
     request(`${baseUrl + '/post'}`)
       .then(data => {
@@ -34,8 +36,7 @@ const Posts: FC<PostProps> = ({ post }) => {
       });
   }
   useEffect(() => {
-    if(post){setPosts(post)}
-    fetchData()
+    if (post) { setPosts(post) }
   }, [post])
 
   const handleDeletePostItem = async (id: number) => {
@@ -48,12 +49,13 @@ const Posts: FC<PostProps> = ({ post }) => {
     });
     fetchData()
   }
+
   return (
     <>
       {posts && (
         <ul className={styles.postList}>
           {posts.map(post => (
-            <li className={styles.postitem} key={post.id}><PostItem onClose={() => handleDeletePostItem(post.id)} date={post.createdAt} data={post.text} author={post.owner.username} /></li>
+            <li className={styles.postitem} key={post.id}><PostItem handlePatch={() => { sendData(post.id)}} onClose={() => handleDeletePostItem(post.id)} date={post.createdAt} data={post.text} author={post.owner.username} /></li>
           ))}
         </ul>
       )}

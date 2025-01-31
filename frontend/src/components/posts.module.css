@@ -1,6 +1,6 @@
 .postitem {
   display: grid;
-  grid-template-columns: 150px 1fr 150px 20px;
+  grid-template-columns: 150px 1fr 150px 20px 30px;
   padding: 0 40px;
   background-color: grey;
   gap: 1px;
