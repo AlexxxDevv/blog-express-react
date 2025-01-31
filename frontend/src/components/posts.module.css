@@ -5,6 +5,7 @@
   background-color: grey;
   gap: 1px;
   align-items: center;
+  height: 48px;
 }
 
 .postList {
@@ -18,4 +19,8 @@
 
 .postitem span {
   background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
 }
