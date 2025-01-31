@@ -9,7 +9,7 @@ const {
 module.exports = {
   apps: [
     {
-      name: 'blog',
+      name: 'blog-backend',
       script: 'dist/index.js',
     },
   ],
