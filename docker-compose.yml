@@ -20,7 +20,7 @@ services:
     env_file:
        - backend/.env.prod
   adminer:
-    container_name: adminer
+    container_name: blogadminer
     image: adminer
     restart: always
     ports:
