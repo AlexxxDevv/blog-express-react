@@ -1,3 +1,4 @@
+/* eslint-disable import/prefer-default-export */
 import { DataSource } from 'typeorm';
 import path from 'path';
 
