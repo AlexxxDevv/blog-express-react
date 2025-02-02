@@ -33,3 +33,10 @@
 .patchButton:disabled {
   cursor: default;
 }
+
+.media {
+  width: 100%; /* Гибкость – наше всё */
+  height: auto; /* Доверьтесь автоматике */
+  object-fit: contain; /* Исключаем искажения пропорций */
+  max-height: 46px;
+}

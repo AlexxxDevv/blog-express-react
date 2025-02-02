@@ -23,8 +23,10 @@ export const createPost = async (req: SessionRequest, res: Response) => {
     },
   });
   try {
+    const mediaPath = req.file?.path;
     const { text } = req.body;
-    const post = await myDataSource.getRepository(Post).save({ text, owner: user });
+    // eslint-disable-next-line max-len
+    const post = await myDataSource.getRepository(Post).save({ text, media: mediaPath, owner: user });
     res.status(201).send(post);
   } catch (error) {
     console.error(error);
@@ -53,6 +55,7 @@ export const deletePost = async (req: SessionRequest, res: Response, next: NextF
 
 export const updatePost = async (req: SessionRequest, res: Response, next: NextFunction) => {
   const { text } = req.body;
+  const mediaPath = req.file?.path;
   const id = Number(req.params.id);
   const post = await myDataSource.getRepository(Post).findOneOrFail({
     where: {
@@ -67,6 +70,8 @@ export const updatePost = async (req: SessionRequest, res: Response, next: NextF
     throw new ForbiddenError('Нельзя изменить чужой пост');
   } else {
     post.text = text;
+    if (mediaPath) { post.media = mediaPath; }
+
     await myDataSource.getRepository(Post).save(post)
       .then(() => res.send(post))
       .catch(next);
@@ -75,7 +80,12 @@ export const updatePost = async (req: SessionRequest, res: Response, next: NextF
 
 export const getPosts = async (req: Request, res: Response) => {
   try {
-    const posts = await myDataSource.getRepository(Post).find({ relations: ['owner'] });
+    const posts = await myDataSource.getRepository(Post).find({
+      relations: ['owner'],
+      order: {
+        createdAt: 'ASC',
+      },
+    });
     res.send(posts);
   } catch (err) {
     console.log(err);

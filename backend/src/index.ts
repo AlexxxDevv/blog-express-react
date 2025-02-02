@@ -1,6 +1,7 @@
 import express from 'express';
 import 'dotenv/config';
 import cors from 'cors';
+import path from 'path';
 import { myDataSource } from './app-data-source';
 import routes from './routes';
 
@@ -12,6 +13,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(routes);
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 myDataSource
   .initialize()

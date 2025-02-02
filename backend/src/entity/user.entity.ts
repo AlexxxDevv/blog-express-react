@@ -5,6 +5,7 @@ import {
 import {
   Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany,
 } from 'typeorm';
+// eslint-disable-next-line import/no-cycle
 import { Post } from './post.entity';
 
 @Entity()
@@ -35,5 +36,3 @@ export class User {
   @OneToMany(() => Post, (post) => post.owner)
     posts!: Post[];
 }
-
-

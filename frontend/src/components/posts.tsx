@@ -16,6 +16,7 @@ export type Post = {
   createdAt: string;
   updatedAt: string;
   text: string;
+  media: string;
   owner: User;
 }
 
@@ -54,7 +55,7 @@ const Posts: FC<PostProps> = ({ post, sendData, user }) => {
       {posts && (
         <ul className={styles.postList}>
           {posts.map(post => (
-            <li className={styles.postitem} key={post.id}><PostItem  user={user} handlePatch={() => { sendData(post.id)}} onClose={() => handleDeletePostItem(post.id)} date={post.createdAt} data={post.text} author={post.owner.username} owner ={post.owner.id} /></li>
+            <li className={styles.postitem} key={post.id}><PostItem  user={user} handlePatch={() => { sendData(post.id)}} onClose={() => handleDeletePostItem(post.id)} date={new Date(post.createdAt).toLocaleString()} data={post.text} author={post.owner.username} owner ={post.owner.id} media={post.media} /></li>
           ))}
         </ul>
       )}

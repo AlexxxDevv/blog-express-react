@@ -5,6 +5,7 @@ import {
 import {
   PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, Column, ManyToOne, Entity,
 } from 'typeorm';
+// eslint-disable-next-line import/no-cycle
 import { User } from './user.entity';
 
 @Entity()
@@ -24,6 +25,9 @@ export class Post {
   @IsNotEmpty()
   @Column()
     text!: string;
+
+  @Column({ nullable: true }) // Путь к файлу
+    media!: string;
 
   @ManyToOne(() => User, (user) => user.posts)
     owner!: User;
