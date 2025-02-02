@@ -21,6 +21,7 @@ export type Post = {
   createdAt: string;
   updatedAt: string;
   text: string;
+  media: string;
   owner: User;
 }
 
