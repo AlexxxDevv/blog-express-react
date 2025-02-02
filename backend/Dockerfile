@@ -7,6 +7,7 @@ RUN npm run build
 
 FROM node:20-alpine as runner
 WORKDIR /app
+RUN mkdir -p /app/dist/uploads
 COPY package*.json ./
 RUN npm ci --omit-dev --no-audit --no-fund \
     && npm i -g pm2

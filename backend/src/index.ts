@@ -9,11 +9,11 @@ import swaggerDocument from './swagger.json';
 import { myDataSource } from './app-data-source';
 import routes from './routes';
 
-const dir = 'uploads';
+const dir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(dir)) {
   fs.mkdirSync(dir, { recursive: true });
 }
-
+console.log(dir);
 const { PORT = 3000 } = process.env;
 
 const app = express();

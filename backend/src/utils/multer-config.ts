@@ -5,7 +5,7 @@ import multer from 'multer';
 // Настройка Multer
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/'); // Папка для сохранения файлов
+    cb(null, `${require.main?.path}/` + 'uploads'); // Папка для сохранения файлов
   },
   filename: (req, file, cb) => {
     const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
