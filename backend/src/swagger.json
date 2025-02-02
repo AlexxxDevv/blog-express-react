@@ -1,0 +1,377 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Blog API",
+    "description": "API для приложения блога",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://51.250.34.32:3001/docs",
+      "description": "Production server"
+    },
+    {
+      "url": "http://localhost:3001//docs",
+      "description": "Local development server"
+    }
+  ],
+  "paths": {
+    "/signup": {
+      "post": {
+        "summary": "Создать нового пользователя",
+        "description": "Создает нового пользователя.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewUser"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Новый пользователь успешно создан",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NewUser"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/signin": {
+      "post": {
+        "summary": "Авторизация пользователя",
+        "description": "Авторизует пользователя.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewUser"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Пользователь авторизован",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserAuthorized"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/profile": {
+      "get": {
+        "summary": "Получение данных пользователя",
+        "description": "Получает данные пользователя, требуется токен",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Пользователь авторизован",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserAuthorized"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/post": {
+      "post": {
+        "summary": "Создает новый пост",
+        "description": "Создает новый пост, требуется токен",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePost"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Пост создан",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Post"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "get": {
+        "summary": "Получает все посты",
+        "description": "Получает посты",
+        "responses": {
+          "200": {
+            "description": "Посты получены",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Post"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/post{id}": {
+
+      "delete": {
+        "summary": "Удаляет пост",
+        "description": "Удаляет пост, требуется токен",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Пост удален",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Post"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "get": {
+        "summary": "Получает пост",
+        "description": "Получает пост, требуется токен",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Пост получен",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Post"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Редактирует пост",
+        "description": "Редактирует пост, требуется токен",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePost"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Пост отредактирован",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Post"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Используйте JWT-токен для доступа. Пример: `Bearer {токен}`"
+      }
+    },
+    "schemas": {
+      "Post": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "Уникальный идентификатор поста"
+          },
+          "text": {
+            "type": "string",
+            "description": "текст поста"
+          },
+          "media": {
+            "type": "string",
+            "description": "ссылка на медиаконтент"
+          },
+          "owner": {
+            "$ref": "#/components/schemas/CreatedUser",
+            "description": "Автор поста"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Дата и время создания поста"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Дата и время создания поста"
+          }
+        }
+      },
+      "CreatePost": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "текст поста"
+          },
+          "media": {
+            "type": "string",
+            "description": "ссылка на медиаконтент"
+          },
+          "required": ["text"]
+        }
+      },
+      "UpdatePost": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "текст поста"
+          },
+          "media": {
+            "type": "string",
+            "description": "ссылка на медиаконтент"
+          }
+        }
+      },
+      "NewUser": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "Имя пользователя"
+          },
+          "password": {
+            "type": "string",
+            "description": "пароль"
+          }
+        },
+        "required": ["username", "password"]
+      },
+      "CreatedUser": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "Имя пользователя"
+          },
+          "password": {
+            "type": "string",
+            "description": "пароль"
+          },
+          "id": {
+            "type": "number",
+            "description": "ай ди"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "время создания"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "время обновления"
+          }
+        }
+      },
+      "UserAuthorized": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "Имя пользователя"
+          },
+          "password": {
+            "type": "string",
+            "description": "пароль"
+          },
+          "id": {
+            "type": "number",
+            "description": "ай ди"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "время создания"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "время обновления"
+          },
+          "token": {
+            "type": "string",
+            "description": "токен"
+          }
+        }
+      }
+    }
+  }
+}
