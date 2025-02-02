@@ -4,9 +4,15 @@ import cors from 'cors';
 import path from 'path';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import swaggerUi from 'swagger-ui-express';
+import fs from 'fs';
 import swaggerDocument from './swagger.json';
 import { myDataSource } from './app-data-source';
 import routes from './routes';
+
+const dir = 'uploads';
+if (!fs.existsSync(dir)) {
+  fs.mkdirSync(dir, { recursive: true });
+}
 
 const { PORT = 3000 } = process.env;
 
@@ -17,8 +23,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(routes);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-const dirName = path.join(__dirname, 'uploads');
-console.log(dirName);
 
 myDataSource
   .initialize()
