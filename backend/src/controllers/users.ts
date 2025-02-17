@@ -17,11 +17,10 @@ interface JwtPayload {
 interface SessionRequest extends Request {
   user?: JwtPayload;
 }
-export const createUser = (req: Request, res: Response, next: NextFunction) => {
+export const createUser = async (req: Request, res: Response, next: NextFunction) => {
   const {
     username, password,
   } = req.body;
-
   bcrypt.hash(password, 10)
     .then((hash) => myDataSource.getRepository(User).create({
       username, password: hash,
@@ -39,7 +38,7 @@ export const createUser = (req: Request, res: Response, next: NextFunction) => {
     });
 };
 
-export const login = (req: Request, res: Response) => {
+export const login = async (req: Request, res: Response) => {
   const { username, password } = req.body;
   return myDataSource.getRepository(User).findOne({
     where: {
