@@ -23,7 +23,7 @@ const PostItem: FC<PostItemProps> = ({ date, data, author, owner, onClose, handl
           <video className='' src={`${baseUrl}/${media.slice(10)}`} controls width="100%" />
         ) : (
           <img className='rounded-full border-2 border-white/50 h-10 w-10' src={`${baseUrl}/${media.slice(10)}`} alt="Post media" width="100%" />
-        )}</div>) : (<img className='rounded-full border-2 border-white/50 h-10 w-10' src="../../public/noavatar.jpg" alt="картинка обозначающая отсутсиве аватара" />)}
+        )}</div>) : (<img className='rounded-full border-2 border-white/50 h-10 w-10' src="noavatar.jpg" alt="картинка обозначающая отсутсиве аватара" />)}
         <span className="font-bold text-left">{author}</span>
       </div>
       <p className="mb-4 text-left">{data}</p>
