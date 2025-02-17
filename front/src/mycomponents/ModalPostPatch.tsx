@@ -53,18 +53,11 @@ const ModalPostPatch = (props: ModalProps) => {
   return (
     <>
     <p className='font-bold text-lg mb-4'>Введите текс поста или прикрипите файл</p>
-    <MyTextArea className='mb-4' value={text} rows={15} cols={20} onChange={(e: { target: { value: SetStateAction<string>; }; }) => setText(e.target.value)} />
+    <MyTextArea className='mb-4' value={text} rows={10} cols={20} onChange={(e: { target: { value: SetStateAction<string>; }; }) => setText(e.target.value)} />
     <MyInputFile accept="image/png, image/jpeg, image/gif, video/mp4" onChange={e => handleFileChange(e)} />
     {showHiddenText && (<span>разрешены файлы меньше 1 МБ, jpeg, png gif, mp4</span>)}
     <MyButton className='mt-4' title={'Отправить'} disabled={showHiddenText} onClick={() => handlePatchPost()} />
   </>
-/*     <>
-      <p className={styles.modalHeading}>Отредактируйте ваше сообщение</p>
-      <textarea name="postContent" value={text} rows={25} cols={40} onChange={e => setText(e.target.value)} />
-      <input type="file" accept="image/png, image/jpeg, image/gif, video/mp4" onChange={e => handleFileChange(e)} />
-      {showHiddenText && (<span>разрешены файлы меньше 1 МБ, jpeg, png gif, mp4</span>)}
-      <button onClick={() => handlePatchPost()}>Редактировать</button>
-    </> */
   )
 }
 
